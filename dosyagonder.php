@@ -5,10 +5,12 @@
 </head>
 <body>
 
-
+<form action="" method="post" name="" enctype="multipart/form-data">
+<input type="file" name="dosya" />
+<input type="submit" value="Gönder" />
+</form>
 
 <?php
-
 if(isset($_FILES['dosya'])) {
    echo '<br>Dosya gönderilmiş';
 } else {
