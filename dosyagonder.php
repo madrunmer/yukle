@@ -4,47 +4,64 @@
 <title></title>
 </head>
 <body>
-
-<form action="" method="post" name="" enctype="multipart/form-data">
-<input type="file" name="dosya" />
-<input type="submit" value="Gönder" />
-</form>
+<?php
+include_once("baglanti.php");
+?>
 
 <?php
-if(isset($_FILES['dosya'])) {
-   echo '<br>Dosya gönderilmiş';
-} else {
-   echo 'Lütfen bir dosya gönderin';
-}
-if(isset($_FILES['dosya'])){
-   $hata = $_FILES['dosya']['error'];
-   if($hata != 0) {
-      echo 'Yüklenirken bir hata gerçekleşmiş.';
-   }  else {
-         $tip = $_FILES['dosya']['type'];
-         $isim = $_FILES['dosya']['name'];
-         $uzanti = explode('.', $isim);
-         $uzanti = $uzanti[count($uzanti)-1];
-         if( $uzanti != 'pdf') {
-            echo '<br>Yanlızca PDF dosyaları gönderebilirsiniz.';
-         } else {
-            $dosya = $_FILES['dosya']['tmp_name'];
-            copy($dosya, 'dosya/' . $_FILES['dosya']['name']);
-            echo '<br>Dosyanız upload edildi!';
-			$_FILES=$_POST['dosya'];
-		$k=$db->query("insert into odev (dosya) values('$dosya')");
-		if(!$k)
-	{
-		echo"DOSYA İSMİ KAYIT YAPILMAMAMITIR";	
-	}
-	else
-	{	
-		echo"DOSYA İSMİ KAYIT YAPILMIŞTIR";	
-	};
-         }
-      }
-   
+
+if($_POST){//Form gönderildi mi?
+	
+	if ($_FILES["resim"]["type"]=="image/jpeg"){//dosya tipi jpeg olsun
+		$okulno=$_POST["okulno"];
+		$ogrenciadi=$_POST["ogrenciadi"];
+		$ogrencisoyadi=$_POST["ogrencisoyadi"];
+		$path=$_POST["path"];
+		$dosya_adi=$_FILES["resim"]["name"];
+		//Dosyaya yeni bir isim oluşturuluyor
+		$uret=array("as","rt","ty","yu","fg");
+		$uzanti=substr($dosya_adi,-4,4);
+		$sayi_tut=rand(1,10000);
+		$nokta=(".");
+		$yeni_ad="dosya/".$uret[rand(0,4)].$sayi_tut.$nokta.$uzanti;
+		//Dosya yeni adıyla dosyalar klasörüne kaydedilecek
+		if (move_uploaded_file($_FILES["resim"]["tmp_name"],$yeni_ad)){
+			echo 'Dosya başarıyla yüklendi.';
+			//Bilgiler veri tabanına kaydedilsin
+				
+		try{
+			$sorgu=mysql_query("insert into ogrenci (okulno,ogrenciadi,ogrencisoyadi,odev,path) values ('$okulno','$ogrenciadi','$ogrencisoyadi','$yeni_ad','$path')");
+		
+					
+			}
+		catch(Exception $e)
+		{
+			var_dump($e);	
+		}
+				
+			if ($sorgu){
+				echo 'Veritabanına kaydedildi. :'.mysql_error($baglanti);
+			}else{
+				echo 'Kayıt sırasında hata oluştu!';
+			}
+		}else{
+			echo 'Dosya Yüklenemedi!';
+		}
+	}else{
+		echo 'Dosya yalnızca jpeg formatında olabilir!';
+		}
+	
 }
 ?>
+<form action="" method="post" name="form1" enctype="multipart/form-data">
+okulno:<input type="text" name="okulno"/><br/>
+adi:<input type="text" name="ogrenciadi"/><br/>
+soyad:<input type="text" name="ogrencisoyadi"/><br/>
+odev:<input type="file" name="resim"/><br/>
+not:<input type="text" name="path"/><br/>
+<input type="submit" name="gonder" value="Kaydet"/>
+</form>
+
+
 </body>
 </html>
