@@ -60,8 +60,9 @@ echo '<tr><td>Ad</td><td>Soyad</td><td>Sınıf</td><td>No</td><td>Ders</td><td>K
  if(isset($aera))
  {
 //$sorgu=mysql_query("select ogrenci,odevy from ogrenci ınner joın  odevy on ogrenci.idnumara = odevy.idnumara where idnumara like '%$aera%' ");//isim sütununda a harfi geçenleri çektik.
-$sogru=mysql_query("select * from ogrenci where no like '%$aera%' ");//isim sütununda a harfi geçenleri çektik.
-$sorgu=mysql_query("select * from odevy where no like '%$aera%' ");//isim sütununda a harfi geçenleri çektik.
+//$sogru=mysql_query("select * from ogrenci where no like '%$aera%' ");//isim sütununda a harfi geçenleri çektik.
+//$sorgu=mysql_query("select * from odevy where no like '%$aera%' ");//isim sütununda a harfi geçenleri çektik.
+  $sorgu=mysql_query("SELECT ogrenci.idnumara, ogrenci.ad, ogrenci.soyad, ogrenci.sinif, odevy.ders, odevy.konu, odevy.odev, odevy.puan FROM ogrenci LEFT JOIN odevy ON (ogrenci.idnumara = odevy.idnumara) where ogrenci.idnumara like '%$aera%'");
 
  }else{
 // $sorgu=mysql_query("select ogrenci.idnumara.ad.soyad.sinif,odevy.idnumara.ders.konu.odev.puan from ogrenci ınner joın odevy on ogrenci.idnumara = odevy.idnumara");
